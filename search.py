@@ -87,16 +87,74 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
 
+
+    node = problem.getStartState()
+    visited = []
+    path = {}
+    dfsstack = util.Stack()
+    dfsstack.push(node)
+    path[node] = []
+    oldPath = path[node]
+    while not problem.isGoalState(node):
+        if node not in visited:
+            visited.append(node)
+            oldPath = path[node]
+            for x in problem.getSuccessors(node):
+                dfsstack.push(x[0])
+                path[x[0]] = oldPath + [x[1]]
+            node = dfsstack.pop()
+        else:
+            node = dfsstack.pop()
+    return path[node]
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
+    node = problem.getStartState()
+    visited = []
+    path = {}
+    dfsstack = util.Queue()
+    dfsstack.push(node)
+    path[node] = []
+    oldPath = path[node]
+    while not problem.isGoalState(node):
+        if node not in visited:
+            visited.append(node)
+            oldPath = path[node]
+            for x in problem.getSuccessors(node):
+                dfsstack.push(x[0])
+                path[x[0]] = oldPath + [x[1]]
+            node = dfsstack.pop()
+        else:
+            node = dfsstack.pop()
+    return path[node]
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
+
+    node = problem.getStartState()
+    visited = []
+    path = {}
+    dfsstack = util.PriorityQueue()
+    dfsstack.push((node,0), 0)
+    path[node] = []
+    oldPath = path[node]
+    oldCost = 0
+    while not problem.isGoalState(node):
+        if node not in visited:
+            visited.append(node)
+            oldPath = path[node]
+            for x in problem.getSuccessors(node):
+                path[x[0]] = oldPath + [x[1]]
+                cost = oldCost + x[2]
+                dfsstack.push((x[0],cost), cost)
+            node,oldCost = dfsstack.pop()
+        else:
+            node,oldCost = dfsstack.pop()
+    return path[node]
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
@@ -109,6 +167,28 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
+    node = problem.getStartState()
+    visited = []
+    path = {}
+    dfsstack = util.PriorityQueue()
+    dfsstack.push((node, 0), 0)
+    path[node] = []
+    oldPath = path[node]
+    oldCost = 0
+    while not problem.isGoalState(node):
+        if node not in visited:
+            visited.append(node)
+            oldPath = path[node]
+            for x in problem.getSuccessors(node):
+                path[x[0]] = oldPath + [x[1]]
+                cost = oldCost + x[2]
+                hCost = cost + heuristic(x[0],problem)
+                dfsstack.push((x[0], cost), hCost)
+            node, oldCost = dfsstack.pop()
+        else:
+            node, oldCost = dfsstack.pop()
+    return path[node]
+
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
